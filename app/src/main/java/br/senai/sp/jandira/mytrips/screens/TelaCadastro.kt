@@ -2,6 +2,7 @@ package br.senai.sp.jandira.mytrips.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
 //import br.senai.sp.jandira.mytrips.TelaCadastro
 import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
@@ -46,7 +48,7 @@ import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
 
 
 @Composable
-fun TelaCadastro()  {
+fun TelaCadastro(controleDeNavegacao: NavHostController) {
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -307,6 +309,9 @@ fun TelaCadastro()  {
             fontSize = 14.sp,
             modifier = Modifier
                 .offset(x= 320.dp, y= 533.dp)
+                .clickable {
+                    controleDeNavegacao.navigate("login")
+                }
         )
     }
 
@@ -349,7 +354,7 @@ fun TelaCadastro()  {
 @Composable
 fun TelaCadastroPreview() {
     MytripsTheme {
-        TelaCadastro()
+//        TelaCadastro(controleDeNavegacao = )
 
     }
 }

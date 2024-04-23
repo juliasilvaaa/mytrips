@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.mytrips.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -237,7 +238,10 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
                 fontSize = 14.sp,
                 modifier = Modifier
                     .offset(x= 320.dp, y= 499.dp)
+                    .clickable { controleDeNavegacao.navigate("cadastro") }
+
             )
+
         }
 
 

@@ -3,6 +3,7 @@ package br.senai.sp.jandira.mytrips.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -25,20 +27,36 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.mytrips.Greeting
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.reduzirData
+import br.senai.sp.jandira.mytrips.repository.CategoriaRepository
+import br.senai.sp.jandira.mytrips.repository.ViagemRepository
+import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
 
 @Composable
-fun TelaHome(controleDeNavegacao: NavHostController) {
+fun TelaHome(controleDeNavegacao: NavHostController?) {
+
+    val viagens = ViagemRepository().listarTodasAsViagens()
+    val categoria = CategoriaRepository().mostrarTodasAsCategorias()
+
+    var destinoState = remember {
+        mutableStateOf("")
+    }
 
     // Column, Surface a imagem e uma column que tenha td que vai estar por cima
 
@@ -116,7 +134,7 @@ fun TelaHome(controleDeNavegacao: NavHostController) {
 
 
         LazyRow {
-            items(3){
+            items(categoria){
 
                 // Card das categorias
                 Card (
@@ -125,158 +143,33 @@ fun TelaHome(controleDeNavegacao: NavHostController) {
                         .fillMaxWidth()
                         .height(90.dp)
                         .width(140.dp)
+                        .offset(x = 10.dp)
                         .padding(horizontal = 6.dp),
-                    colors = CardDefaults
-                        .cardColors(
-                            // FF - opacidade
-                            containerColor = Color(0xFFCF06F0)
-                        )
+                    // Se o card estiver selecionado (true a cor dele vai ser mais escura)
+                    colors = if (it.selecionado==true) CardDefaults.cardColors(containerColor = Color(0xFFCF06F0))
+                    // Se nao estiver selecionado a opacidade será menor
+                    else CardDefaults.cardColors(containerColor = Color(0xFFEAABF4))
 
                 ) {
-
-                    Column (
-                        // Alinhando no centro
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier
+                            .padding(8.dp)
                             .fillMaxSize()
                     ) {
-                        // Deixar o fundo tranparente
-                        Card(
-                            colors = CardDefaults.cardColors(Color.Transparent))
-                        {
-                            Image(
-                                painter = painterResource(id = R.drawable.montanha) ,
-                                contentDescription = "Montanha",
-                                modifier = Modifier
-                                    .width(52.dp)
-                                    .height(52.dp)
-
-                            )
-                        }
-                        Column (
+                        Image(
+                            painter = if (it.imagem==null) painterResource(id = R.drawable.notimage) else it.imagem!!,
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .padding(start = 8.dp)
-                        ){
-                            Text(
-                                text = "Montain",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.W400,
-                                color = Color.White,
-                            )
-
-                        }
-
-
-                    }
-
-                }
-                Card (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(90.dp)
-                        .width(140.dp)
-                        .padding(horizontal = 6.dp),
-                    colors = CardDefaults
-                        .cardColors(
-                            // FF - opacidade
-                            containerColor = Color(0xFFCF06F0)
-
+                                .width(60.dp)
+                                .height(45.dp)
                         )
-
-                ) {
-
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Card(colors = CardDefaults.cardColors(Color.Transparent)){
-                            Image(
-                                painter = painterResource(id = R.drawable.montanha) ,
-                                contentDescription = "Montanha",
-                                // Traz a imagem para frente e ocupa o espaco
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .width(52.dp)
-                                    .height(52.dp)
-                            )
-                        }
-
-                        Column (
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                        ){
-                            Text(
-                                text = "Snow",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.W400,
-                                color = Color.White
-
-                            )
-                            Spacer(modifier = Modifier)
-
-                        }
-
-
+                        Text(text = it.titulo, color = Color.White)
                     }
-
-                }
-
-                // Card dos lugares
-                Card (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(90.dp)
-                        .width(140.dp)
-                        .padding(horizontal = 6.dp),
-                    colors = CardDefaults
-                        .cardColors(
-                            // FF - opacidade
-                            containerColor = Color(0xFFCF06F0)
-                        )
-
-                ) {
-
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Card(colors = CardDefaults.cardColors(Color.Transparent)){
-                            Image(
-                                painter = painterResource(id = R.drawable.praia) ,
-                                contentDescription = "Praia",
-                                // Traz a imagem para frente e ocupa o espaco
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .width(52.dp)
-                                    .height(52.dp)
-                            )
-                        }
-                        Column (
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                        ){
-                            Text(
-                                text = "Beach",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.W400,
-                                color = Color.White,
-
-
-                                )
-                            Spacer(modifier = Modifier)
-
-                        }
-
-                    }
-
                 }
             }
-
 
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -292,8 +185,10 @@ fun TelaHome(controleDeNavegacao: NavHostController) {
         ) {
             // Campo de pesquisa
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = destinoState.value,
+                onValueChange = {
+                    destinoState.value = it
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .offset(y = 7.dp)
@@ -326,142 +221,91 @@ fun TelaHome(controleDeNavegacao: NavHostController) {
             modifier = Modifier
                 .offset(x = 12.dp)
         )
+        Spacer(modifier = Modifier.height(4.dp))
 
 
-//        Lugares
+        // Viagens
         LazyColumn{
-            items(2){
+            // Quantidade de viagens que eu tiver vai ser a quantidade de items, a cada volta ele pega uma viagem que esta na lista
+            // variavel que criamos
 
-                // Card das categorias
-                Card (
-                    // Deixar com espaco das laterais, elevacao, cor e tamanho do Card
+            items(viagens){
+                Card(
                     elevation = CardDefaults.cardElevation(6.dp),
+                    colors = CardDefaults.cardColors(Color.White),
                     modifier = Modifier
-                        .height(235.dp)
+                        .fillMaxWidth()
                         .padding(10.dp)
-                        .fillMaxWidth(),
-                    colors = CardDefaults
-                        .cardColors(
-                            // FF - opacidade
-                            containerColor = Color.White
-                        )
-
                 ) {
-                    Column (
-                        // Alinhando no centro
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        verticalArrangement = Arrangement.Center,
+                    // Criamos duas column para conseguir modificar melhor o padding
+                    Column(
                         modifier = Modifier
+                            // Vai ter a largura do pai dela (Card)
                             .fillMaxSize()
-                            .padding(3.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.london) ,
-                            contentDescription = "London, 2019",
-                            contentScale = ContentScale.Crop,
+                            .padding(4.dp)
+                    ){
+                            Image(
+                                // Se a imagem for nula aparecer a imagem not image, e se tiver aparecer a imagem !!
+                                painter = if (it.imagem == null) painterResource(id = R.drawable.notimage)else it.imagem!!,
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .height(120.dp)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(6.dp))
+                            )
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                            Text(
+                                text =  "${it.destino}, ${it.DataChegada.year}",
+                                color = Color(0xFFCF06F0)
+                            ) // Extrair o ano da chegada
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+
+                            Text(
+                                text = "${it.descricao}",
+                                fontSize = 12.sp,
+                                color = Color(0xFFA09C9C)
+                                )
+
+                        Row (
                             modifier = Modifier
-                                .height(120.dp)
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
+                                .offset(x = -10.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = "${reduzirData(it.DataChegada)} - ${reduzirData(it.DataPartida)}",
+                                color = Color(0xFFCF06F0),
+                                fontSize = 12.sp
+                            )
+                        }
 
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "London, 2019",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.W400,
-                            color = Color(0xFFCF06F0)
-                        )
-                        Spacer(modifier = Modifier.height(5.dp))
-
-                        Text(
-                            text = "London is the capital and largest city of  the United Kingdom, with a population of just under 9 million.",
-                            fontSize = 12.sp,
-                            color = Color(0xFFA09C9C)
-
-                        )
-
-                        Text(
-                            text = "18 Feb - 21 Feb",
-                            color = Color(0xFFCF06F0),
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .align(Alignment.End)
-                        )
+                            // Outra forma de extrair a data chegada, e o  mes com apenas 3 letras
+//                           Text(text = "${it.DataChegada.dayOfMonth} ${it.DataChegada.month.toString().substring(0..2)}")
 
 
                     }
 
                 }
-
-                // Card de porto
-                Card (
-                    // Deixar com espaco das laterais, elevacao, cor e tamanho do Card
-                    elevation = CardDefaults.cardElevation(6.dp),
-                    modifier = Modifier
-                        .height(235.dp)
-                        .padding(10.dp)
-                        .fillMaxWidth(),
-                    colors = CardDefaults
-                        .cardColors(
-                            // FF - opacidade
-                            containerColor = Color.White
-                        )
-
-                ) {
-                    Column (
-                        // Alinhando no centro
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(3.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.porto) ,
-                            contentDescription = "Porto, 2022",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .height(120.dp)
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Porto, 2022",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.W400,
-                            color = Color(0xFFCF06F0)
-                        )
-                        Spacer(modifier = Modifier.height(5.dp))
-
-                        Text(
-                            text = "Porto is the second city in Portugal, the capital of the Oporto District, and one of the Iberian Peninsula's major urban areas.",
-                            fontSize = 12.sp,
-                            color = Color(0xFFA09C9C)
-
-                        )
-
-                        Text(
-                            text = "15 may - 22 may",
-                            color = Color(0xFFCF06F0),
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .align(Alignment.End)
-                        )
-
-
-                    }
-
-                }
+            }
+        }
 
 
 
             }
         }
 
+
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun TelaHomePreview() {
+    MytripsTheme {
+        TelaHome(null)
+
     }
-
-
 }

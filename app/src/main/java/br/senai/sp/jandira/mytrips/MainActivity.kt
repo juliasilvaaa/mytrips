@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.mytrips.screens.TelaCadastro
 import br.senai.sp.jandira.mytrips.screens.TelaHome
 import br.senai.sp.jandira.mytrips.screens.TelaLogin
 import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
                         // Passando um argumento -- clica no login, refactor
                         composable(route = "login"){ TelaLogin(controleDeNavegacao) }
                         composable(route = "home"){  TelaHome(controleDeNavegacao) }
+                        composable(route = "cadastro"){ TelaCadastro(controleDeNavegacao)}
                     }
                 }
             }
