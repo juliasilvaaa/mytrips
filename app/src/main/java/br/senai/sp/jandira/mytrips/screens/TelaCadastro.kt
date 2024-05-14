@@ -31,10 +31,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.model.Usuario
+import br.senai.sp.jandira.mytrips.repository.ContaRepository
 //import br.senai.sp.jandira.mytrips.TelaCadastro
 import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
 
@@ -49,6 +54,32 @@ import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
 
 @Composable
 fun TelaCadastro(controleDeNavegacao: NavHostController) {
+
+
+    var nomeState = remember {
+        mutableStateOf("")
+    }
+    var emailState = remember {
+        mutableStateOf("")
+    }
+    var foneState = remember {
+        mutableStateOf("")
+    }
+    var senhaState = remember {
+        mutableStateOf("")
+    }
+
+    var isOverState = remember {
+        // Tipo booleano
+        mutableStateOf(false)
+    }
+
+    // Pega o contexto e passa pro repositorio
+    val cr = ContaRepository(LocalContext.current)
+
+
+
+
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -128,8 +159,10 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
 
         // Para digitar o nome
         OutlinedTextField(
-            value = "Susanna Hoffs",
-            onValueChange = {},
+            value = nomeState.value,
+            onValueChange = {
+                            nomeState.value = it
+            },
             modifier = Modifier
                 .padding(top = 225.dp)
                 .fillMaxWidth(),
@@ -160,9 +193,10 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
 
         // Para digitar o telefone
         OutlinedTextField(
-            value = "99999-0987",
-
-            onValueChange ={},
+            value = foneState.value ,
+            onValueChange ={
+                           foneState.value = it
+            },
             modifier =  Modifier
                 .fillMaxWidth(),
 
@@ -189,9 +223,10 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
 
         // Para digitar o e-mail
         OutlinedTextField(
-            value = "susanna@email.com",
-
-            onValueChange ={},
+            value = emailState.value,
+            onValueChange ={
+                           emailState.value = it
+            },
             modifier =  Modifier
                 .fillMaxWidth(),
 
@@ -218,9 +253,10 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
 
         // Para digitar a senha
         OutlinedTextField(
-            value = "**********",
-
-            onValueChange ={},
+            value = senhaState.value,
+            onValueChange ={
+                           senhaState.value = it
+            },
             modifier =  Modifier
                 .fillMaxWidth(),
 
@@ -255,8 +291,10 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
 
 // CheckBox - caixinha para marcar habilitado ou desabilitado
         Checkbox(
-            checked = false,
-            onCheckedChange = {},
+            checked = isOverState.value,
+            onCheckedChange = {
+                              isOverState.value = it
+            },
             colors = CheckboxDefaults.colors(
                 uncheckedColor = Color(0xFFCF06F0),
                 checkedColor = Color(0xFFCF06F0)
@@ -274,7 +312,19 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
         )
 
         // Botao para criar conta
-        Button(onClick = { /*TODO*/ },
+        Button(onClick = {
+            // Quando clicar, criar objeto conta
+                      val conta = Usuario(
+                          nome = nomeState.value,
+                          telefone = foneState.value,
+                          email = emailState.value,
+                          senha = senhaState.value,
+                          isOver = isOverState.value
+                      )
+            // Salvar a conta
+            cr.salvar(conta)
+            controleDeNavegacao.navigate("login")
+                         },
             modifier = Modifier
                 .width(327.dp)
                 .offset(x = 35.dp, y = 540.dp)
@@ -308,7 +358,7 @@ fun TelaCadastro(controleDeNavegacao: NavHostController) {
             fontWeight = FontWeight.ExtraBold,
             fontSize = 14.sp,
             modifier = Modifier
-                .offset(x= 320.dp, y= 533.dp)
+                .offset(x = 320.dp, y = 533.dp)
                 .clickable {
                     controleDeNavegacao.navigate("login")
                 }

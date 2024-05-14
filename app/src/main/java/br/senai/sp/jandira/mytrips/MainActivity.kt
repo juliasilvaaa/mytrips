@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                         // Passando um argumento -- clica no login, refactor
                         composable(route = "login"){ TelaLogin(controleDeNavegacao) }
                         composable(route = "home"){  TelaHome(controleDeNavegacao) }
-                        composable(route = "cadastro"){ TelaCadastro(controleDeNavegacao)}
+                        composable(route = "cadastro"){ TelaCadastro(controleDeNavegacao) }
                     }
                 }
             }

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.mytrips.repository.ContaRepository
 import br.senai.sp.jandira.mytrips.ui.theme.MytripsTheme
 
 @Composable
@@ -194,12 +195,14 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
         Column {
             Button(
                 onClick = {
-                          if (emailState.value == "admin" && senhaState.value == "admin"){
-                              mensagemErroState.value = "Usuario ou senha incorretos"
-                              controleDeNavegacao.navigate("home")
-                          }else{
-                              erroLoginState.value = true
-                          }
+                         val email = emailState.value
+                    val senha = senhaState.value
+                    if(ContaRepository.verificarLogin(email,senha)){
+                        controleDeNavegacao.navigate("home")
+                    }else{
+                        erroLoginState.value = true
+                        mensagemErroState.value = "Usuario ou senha incorretos"
+                    }
                           },
                 modifier = Modifier
                     .width(150.dp)
