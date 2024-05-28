@@ -14,11 +14,17 @@ class ContaRepository (context: Context){
         return db.salvar(usuario)
     }
 
+    fun listarTodosOsUsuarios ():List<Usuario>{
+        return db.
+    }
+
 
     fun verificarLogin(email: String, senha: String): Boolean{
         val usuario = db.buscarPeloEmail(email)
         return usuario != null && usuario.senha == senha
     }
+
+
 
 
 

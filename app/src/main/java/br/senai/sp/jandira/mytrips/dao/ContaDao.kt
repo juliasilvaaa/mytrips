@@ -18,7 +18,7 @@ interface ContaDao {
 
   @Query("SELECT * FROM tbl_usuarios WHERE email = :email")
   fun buscarPeloEmail(email: String): Usuario?
-
-
 }
+
+
 

@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,6 +59,8 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
     var mensagemErroState = remember {
         mutableStateOf("")
     }
+
+    var contaRepository = ContaRepository(LocalContext.current)
 
 // Tela de Login
     MytripsTheme {
@@ -195,9 +198,9 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
         Column {
             Button(
                 onClick = {
-                         val email = emailState.value
+                    val email = emailState.value
                     val senha = senhaState.value
-                    if(ContaRepository.verificarLogin(email,senha)){
+                    if(contaRepository.verificarLogin(email, senha)){
                         controleDeNavegacao.navigate("home")
                     }else{
                         erroLoginState.value = true
