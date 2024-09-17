@@ -14,9 +14,9 @@ class ContaRepository (context: Context){
         return db.salvar(usuario)
     }
 
-    fun listarTodosOsUsuarios ():List<Usuario>{
-        return db.
-    }
+//    fun listarTodosOsUsuarios ():List<Usuario>{
+//
+//    }
 
 
     fun verificarLogin(email: String, senha: String): Boolean{
